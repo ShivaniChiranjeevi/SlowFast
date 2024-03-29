@@ -31,7 +31,8 @@ class Imagenet(torch.utils.data.Dataset):
         self.num_retries = num_retries
         self.cfg = cfg
         self.mode = mode
-        self.data_path = cfg.DATA.PATH_TO_DATA_DIR
+        self.data_path = cfg.DATA.PATH_TO_DATA_DIR+"/train"
+        
         assert mode in [
             "train",
             "val",
@@ -57,13 +58,16 @@ class Imagenet(torch.utils.data.Dataset):
     def _construct_imdb(self):
         """Constructs the imdb."""
         # Compile the split data path
-        split_path = os.path.join(self.data_path, self.mode)
+        #split_path = os.path.join(self.data_path, self.mode)
+        split_path=self.data_path+'/train'
         logger.info("{} data path: {}".format(self.mode, split_path))
         # Images are stored per class in subdirs (format: n<number>)
+        '''
         split_files = pathmgr.ls(split_path)
         self._class_ids = sorted(
             f for f in split_files if re.match(r"^n[0-9]+$", f)
-        )
+        )'''
+        self._class_ids=sorted(os.listdir(split_path))
         # Map ImageNet class ids to contiguous ids
         self._class_id_cont_id = {v: i for i, v in enumerate(self._class_ids)}
         # Construct the image db
